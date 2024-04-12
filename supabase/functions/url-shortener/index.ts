@@ -1,43 +1,60 @@
 // Follow this setup guide to integrate the Deno language server with your editor:
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
-import { HTTPException, Hono } from "https://deno.land/x/hono/mod.ts";
-import type { Context } from "https://deno.land/x/hono/mod.ts";
-import { getUrl, shortenUrl } from "./short.ts";
+import { Hono, HTTPException } from "https://deno.land/x/hono/mod.ts";
+import { cors } from "https://deno.land/x/hono@v4.2.3/middleware/cors/index.ts";
+import { UrlService } from "./urlService.ts";
 
 // change this to your function name
 const functionName = "url-shortener";
 const app = new Hono().basePath(`/${functionName}`);
+const urlService = new UrlService();
+
+app.use(
+  "/url/*",
+  cors({
+    origin: [
+      Deno.env.get("BASE_EDGE_FUNCTION_URL")!,
+      Deno.env.get("FRONTEND_URL")!,
+    ],
+    allowHeaders: ["X-Custom-Header", "Upgrade-Insecure-Requests"],
+    allowMethods: ["POST", "GET", "OPTIONS"],
+    maxAge: 600,
+    credentials: true,
+  }),
+);
 
 app
-  .get("/url/:code", async (c: Context) => {
-    const code = c.req.param('code');
-    const url = await getUrl(code);
-    
-    if(!url) {
-      throw new HTTPException(404, { message: 'not found' });
+  .get("/url/:code", async (c) => {
+    const code = c.req.param("code");
+    const url = await urlService.getUrl(code);
+
+    if (!url) {
+      throw new HTTPException(404, { message: "not found" });
     }
-    
+
     return c.redirect(url);
-  })
-  .post(async (c) => {
-    const result = await shortenUrl("url");
-
-    c.status(201);
-
-    return c.body(result);
   });
 
+app.post("/url", async (c) => {
+  const body = await c.req.json();
+  const url = body["url"];
+
+  if (!url || typeof url != "string") {
+    throw new HTTPException(422, {
+      message: "Missing request body information: [URL]",
+    });
+  }
+
+  const result = await urlService.generateShortUrl(url);
+
+  if (!result) {
+    throw new HTTPException(500, { message: "URL processing failed" });
+  }
+
+  c.status(201);
+
+  return c.body(result);
+});
+
 Deno.serve(app.fetch);
-
-/* To invoke locally:
-
-  1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
-  2. Make an HTTP request:
-
-  curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/url-shortener' \
-    --header 'Authorization: Bearer ' \
-    --header 'Content-Type: application/json' \
-    --data '{"name":"Functions"}'
-
-*/

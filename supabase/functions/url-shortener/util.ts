@@ -1,7 +1,5 @@
 import { randomInt } from 'node:crypto';
-
-const RANDOM_STRING_LENGH = 20;
-const ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+import { ALLOWED_CHARS, RANDOM_STRING_LENGH } from './config.ts';
 
 export const isCodeUnique = (code: string) => {
     // TODO: check if code exists in DB
