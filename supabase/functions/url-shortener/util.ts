@@ -1,11 +1,6 @@
 import { randomInt } from 'node:crypto';
 import { ALLOWED_CHARS, RANDOM_STRING_LENGH } from './config.ts';
 
-export const isCodeUnique = (code: string) => {
-    // TODO: check if code exists in DB
-   return false; 
-}
-
 export const generateUniqueCode = () => {
     let code = "";
 
@@ -15,4 +10,13 @@ export const generateUniqueCode = () => {
     }
 
     return code;
+}
+
+export const isValidURL = (str: string)  => {
+    try {
+        new URL(str);
+        return true;
+    } catch (err) {
+        return false;
+    }
 }

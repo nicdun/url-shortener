@@ -4,6 +4,7 @@
 import { Hono, HTTPException } from "https://deno.land/x/hono/mod.ts";
 import { cors } from "https://deno.land/x/hono@v4.2.3/middleware/cors/index.ts";
 import { UrlService } from "./urlService.ts";
+import { isValidURL } from "./util.ts";
 
 // change this to your function name
 const functionName = "url-shortener";
@@ -28,21 +29,22 @@ app
   .get("/url/:code", async (c) => {
     const code = c.req.param("code");
     const url = await urlService.getUrl(code);
-
+    
     if (!url) {
       throw new HTTPException(404, { message: "not found" });
     }
-
+    
     return c.redirect(url);
   });
-
-app.post("/url", async (c) => {
-  const body = await c.req.json();
-  const url = body["url"];
-
-  if (!url || typeof url != "string") {
+  
+  app.post("/url", async (c) => {
+    const body = await c.req.json();
+    const url = body["url"];
+    const validUrl = isValidURL(url);
+    
+  if (!url || typeof url != "string" || !validUrl) {
     throw new HTTPException(422, {
-      message: "Missing request body information: [URL]",
+      message: "Cannot process body information: [URL]",
     });
   }
 
