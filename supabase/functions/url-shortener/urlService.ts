@@ -3,10 +3,10 @@ import { generateUniqueCode } from "./util.ts";
 
 export class UrlService {
   #supabaseAdapter;
-  #baseEdgeFunctionUrl = Deno.env.get("BASE_EDGE_FUNCTION_URL");
+  #frontendUrl = Deno.env.get("FRONTEND_URL");
 
-  constructor() {
-    this.#supabaseAdapter = new SupabaseService();
+  constructor(authHeader: string) {
+    this.#supabaseAdapter = new SupabaseService(authHeader);
   }
 
   public async generateShortUrl(url: string) {
@@ -23,7 +23,7 @@ export class UrlService {
       codeUnique = await this.isCodeUnique(code);
     } while (!codeUnique);
 
-    const shortenUrl = `${this.#baseEdgeFunctionUrl}/${code}`;
+    const shortenUrl = `${this.#frontendUrl}/${code}`;
 
     const { error } = await this.#supabaseAdapter.save(url, shortenUrl, code);
 

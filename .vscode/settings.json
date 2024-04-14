@@ -1,11 +1,11 @@
 {
+    "deno.enable": true, // enables extension
+  "deno.lint": true, // inline deno lint diagnostics, requires `deno.unstable`
+  "deno.unstable": true, // also provides unstable type declarations in VS Code
   "deno.enablePaths": [
-    "supabase/functions"
+    "./supabase"
   ],
-  "deno.importMap": "./supabase/functions/import_map.json",
-  "deno.lint": true,
-  "deno.unstable": true,
-  "[typescript]": {
-    "editor.defaultFormatter": "denoland.vscode-deno"
+  "[astro]": {
+    "editor.defaultFormatter": "astro-build.astro-vscode"
   }
 }

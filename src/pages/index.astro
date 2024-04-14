@@ -1,0 +1,65 @@
+---
+import Base from "../layouts/Base.astro";
+import { siteConfig } from "../site.config";
+
+const meta = siteConfig;
+---
+
+<Base meta={meta}>
+	<div class="mockup-code flex flex-col h-full w-full md:max-w-7xl">
+		<div class="badge badge-accent absolute right-5">free</div>
+		<div class="h-full flex flex-col w-full md:max-w-7xl items-center justify-center text-center px-5">
+
+			<h1 class="font-bold text-5xl pb-2">Shorten your to loooooong links in now time ...</h1>
+			<h1 class="font-bold text-5xl pb-5">for free👨‍🚀</h1>
+			<form id="form" class="w-full" x-data="{valid: false}">
+				<input type="text"
+				name="url"
+				id="url"
+				x-on:input.change="valid = !!$event.target.value"
+				placeholder="Your much too long URL..." class="input input-bordered input-accent w-full max-w-lg" />
+				<button class="btn btn-outline btn-accent" x-bind:class="!valid && 'btn-disabled btn-neutral'" type="submit">Accent</button>
+			</form>
+			<div id="result"></div>
+		</div>
+	</div>
+	
+</Base>
+
+<script>
+	const form = document.querySelector("#form");
+
+	function copyUrl() {
+  const copyText = document.getElementById("result");
+
+  const text = copyText!.textContent!;
+  navigator.clipboard.writeText(text);
+
+  // Alert the copied text
+  alert("Copied the text: " +text);
+}
+
+async function sendData() {
+  const formData = new FormData(form);
+
+  try {
+    const response = await fetch("/api/url", {
+      method: "POST",
+      body: formData,
+    });
+    const result = await response.json();
+
+	document.getElementById('result')!.innerHTML = `<div class="flex flex-row"><p class="mt-2 text-xl font-bold"><span id="result">${result.url}</span>🔥</p><button id="copy" class="btn btn-outline" onclick="copyUrl()">Copy</button></div>`;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// Take over form submission
+form!.addEventListener("submit", (event) => {
+	document.getElementById('result')!.innerHTML = `<div class="skeleton w-full max-w-lg h-6 mt-2"></div>`;
+	
+  event.preventDefault();
+  sendData();
+});
+</script>

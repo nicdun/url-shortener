@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+	font-family: 'Satoshi';
+	src: url('/fonts/Satoshi-Variable.ttf');
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Satoshi';
+	src: url('/fonts/Satoshi-VariableItalic.ttf');
+	font-style: italic;
+	font-display: swap;
+}
+
+@layer base {
+	:root {
+		--background: rgb(229, 231, 235);
+		--background-secondary: rgb(243, 243, 243);
+		--background-tertiary: rgb(255, 255, 255); 
+		--primary: rgb(255, 255, 255);
+		--primary-foreground: rgb(243, 243, 243);
+		--secondary: rgb(0, 0, 0);
+		--secondary-foreground: rgb(0, 0, 0);
+		--muted: 240 4.8% 95.9%;
+		--muted-foreground: 240 3.8% 46.1%;
+		--accent: 240 4.8% 95.9%;
+		--accent-foreground: 240 5.9% 10%;
+		--destructive: 0 72.22% 50.59%;
+		--destructive-foreground: 0 0% 98%;
+		--border: 240 5.9% 90%;
+		--input: 240 5.9% 90%;
+		--ring: 240 5.9% 10%;
+		--radius: 0.5rem;
+	}
+	.dark {
+		--background: rgb(84, 84, 84);
+		--background-secondary: rgb(32, 32, 32);
+		--background-tertiary: rgb(28, 28, 28);
+		--primary: rgb(28, 28, 28);
+		--primary-foreground: rgb(32, 32, 32);
+		--secondary:rgb(255, 255, 255);
+		--secondary-foreground:rgb(255, 255, 255);
+		--muted: 240 3.7% 15.9%;
+		--muted-foreground: 240 5% 64.9%;
+		--accent: 240 3.7% 15.9%;
+		--accent-foreground: 0 0% 98%;
+		--destructive: 0 62.8% 30.6%;
+		--destructive-foreground: 0 0% 98%;
+		--border: 240 3.7% 15.9%;
+		--input: 240 3.7% 15.9%;
+		--ring: 240 4.9% 83.9%;
+	}
+}

@@ -1,2 +1,2 @@
-export const RANDOM_STRING_LENGH = 20;
+export const RANDOM_STRING_LENGH = 10;
 export const ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
