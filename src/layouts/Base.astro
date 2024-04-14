@@ -1,0 +1,36 @@
+---
+import type { SiteMeta } from '../types';
+
+import ThemeProvider from '../components/ThemeProvider.astro';
+import { siteConfig } from '../site.config';
+import Footer from '../components/layout/Footer.astro';
+import Head from '../components/layout/Head.astro';
+import Header from '../components/layout/Header.astro';
+
+interface Props {
+	meta: SiteMeta;
+}
+
+const {
+	meta: { articleDate, description = siteConfig.description, ogImage, title }
+} = Astro.props;
+---
+
+<html lang={siteConfig.lang} class="h-full">
+	<Head articleDate={articleDate} description={description} ogImage={ogImage} title={title} />
+
+	<body
+		class="flex h-full justify-center bg-background bg-[url('/blurry-gradient-haikei.svg')] bg-cover bg-fixed dark:bg-[url('/blurry-gradient-haikei-dark.svg')]"
+	>
+		<ThemeProvider />
+		<main
+			class="flex w-screen h-full flex-col items-center px-5 pt-5 font-satoshi leading-relaxed"
+		>
+			<Header />
+			<slot />
+			<div class="w-full text-primary-foreground">
+				<Footer />
+			</div>
+		</main>
+	</body>
+</html>

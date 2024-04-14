@@ -9,7 +9,7 @@ import { isValidURL } from "./util.ts";
 // change this to your function name
 const functionName = "url-shortener";
 const app = new Hono().basePath(`/${functionName}`);
-const urlService = new UrlService();
+
 
 app.use(
   "/url/*",
@@ -27,6 +27,14 @@ app.use(
 
 app
   .get("/url/:code", async (c) => {
+    const authHeader = c.req.header('Authorization');
+
+    if (!authHeader) {
+      throw new HTTPException(401, { message: "authentication failure" });
+    }
+
+    const urlService = new UrlService(authHeader);
+
     const code = c.req.param("code");
     const url = await urlService.getUrl(code);
     
@@ -34,10 +42,18 @@ app
       throw new HTTPException(404, { message: "not found" });
     }
     
-    return c.redirect(url);
+    return c.json({ url: url });
   });
   
   app.post("/url", async (c) => {
+    const authHeader = c.req.header('Authorization');
+
+    if (!authHeader) {
+      throw new HTTPException(401, { message: "authentication failure" });
+    }
+    
+    const urlService = new UrlService(authHeader);
+
     const body = await c.req.json();
     const url = body["url"];
     const validUrl = isValidURL(url);
@@ -56,7 +72,7 @@ app
 
   c.status(201);
 
-  return c.body(result);
+  return c.json({ url: result });
 });
 
 Deno.serve(app.fetch);

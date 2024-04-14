@@ -4,11 +4,11 @@ export class SupabaseService {
   #supabaseClient;
   #supabaseTableName="urls";
 
-  constructor() {
+  constructor(authHeader: string) {
     this.#supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      //{ global: { headers: { Authorization: authHeader } } }
+      { global: { headers: { Authorization: authHeader } } }
     );
   }
 
