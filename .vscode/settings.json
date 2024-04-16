@@ -5,7 +5,8 @@
   "deno.enablePaths": [
     "./supabase"
   ],
+  "prettier.documentSelectors": ["**/*.astro"],
   "[astro]": {
-    "editor.defaultFormatter": "astro-build.astro-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

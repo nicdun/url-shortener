@@ -24,6 +24,7 @@ export class SupabaseService {
         key,
         value,
       )
+      .limit(1)
       .maybeSingle();
   }
 }
