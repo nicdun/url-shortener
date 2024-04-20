@@ -1,0 +1,156 @@
+---
+import Base from '../layouts/Base.astro';
+import { siteConfig } from '../site.config';
+
+const meta = siteConfig;
+---
+
+<Base meta={meta}>
+	<div
+		class="mockup-code flex h-full w-full flex-col border border-white/50 bg-black/40 md:max-w-7xl"
+	>
+		<div class="badge badge-accent absolute right-5">free</div>
+		<div
+			class="mx-auto flex h-full w-full flex-col items-center justify-center px-5 text-center md:max-w-5xl"
+		>
+			<h1 class="pb-2 text-5xl font-medium text-white">
+				Shorten your to loooooong links in now time. <span class="font-light text-gray-400"
+					>for free👨‍🚀</span
+				>
+			</h1>
+			<div id="form" class="w-full text-left" x-data="{ valid: false, filled: false }">
+				<label
+					class="input flex items-center gap-2 border border-white/50 shadow-xl shadow-black/30"
+				>
+					<input
+						type="text"
+						name="url"
+						id="url"
+						x-on:input.change="valid = isUrlValid($event.target.value); filled = !!$event.target.value; error = false"
+						class="grow"
+						placeholder="Url..."
+					/>
+					<div class="tooltip" data-tip="get short url">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="cursor-pointer duration-200 hover:text-white"
+							x-bind:class="!valid && 'cursor-default text-gray-500 hover:text-gray-500'"
+							x-on:click="valid && sendData()"
+						>
+							<path d="M10 14l11 -11"></path>
+							<path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"
+							></path>
+						</svg>
+					</div>
+				</label>
+				<span x-show="filled && !valid" class="pl-1 text-error">invalid url</span>
+				<span x-show="$store.error" class="pl-1 text-error">error during url processing</span>
+				<label
+					class="input mt-5 flex w-full items-center shadow-xl shadow-black/30"
+					x-show="$store.result"
+				>
+					<input
+						type="text"
+						name="result"
+						id="result"
+						disabled="true"
+						class="grow"
+						x-model="$store.result"
+					/>
+					<div class="tooltip duration-200" data-tip="copy short URL">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="cursor-pointer duration-200 hover:text-white"
+							x-on:click="copyUrl()"
+						>
+							<path
+								d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z"
+							></path>
+							<path
+								d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1"
+							></path>
+						</svg>
+					</div>
+				</label>
+			</div>
+		</div>
+	</div>
+</Base>
+
+<script>
+	import Alpine from 'alpinejs';
+
+	let loading = false;
+
+	document.addEventListener('alpine:init', () => {
+		Alpine.store('result', '');
+		Alpine.store('error', false);
+	});
+
+	Alpine.start();
+
+	function copyUrl() {
+		const copyText = document.getElementById('result') as HTMLInputElement;
+
+		const text = copyText!.value;
+		navigator.clipboard.writeText(`${text}`);
+	}
+
+	async function sendData() {
+		if (loading) {
+			return;
+		}
+
+		loading = true;
+
+		const input: HTMLInputElement = document.getElementById('url') as HTMLInputElement;
+		const data = input.value;
+
+		try {
+			const response = await fetch('/api/url', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ url: data })
+			});
+			const result = await response.json();
+
+			Alpine.store('result', result.url);
+
+			loading = false;
+		} catch (error) {
+			console.error(error);
+			loading = false;
+		}
+	}
+
+	function isUrlValid(input: string) {
+		try {
+			new URL(input);
+			return true;
+		} catch (error) {
+			return false;
+		}
+	}
+
+	(window as any).isUrlValid = isUrlValid;
+	(window as any).copyUrl = copyUrl;
+	(window as any).sendData = sendData;
+</script>
