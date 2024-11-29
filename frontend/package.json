@@ -24,6 +24,6 @@
     "daisyui": "4.10.1",
 		"prettier": "3.3.0",
 		"prettier-plugin-astro": "0.14.1",
-		"prettier-plugin-tailwindcss": "0.6.0"
+		"prettier-plugin-tailwindcss": "0.6.9"
   }
 }
