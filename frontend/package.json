@@ -21,7 +21,7 @@
     "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "daisyui": "4.12.22",
+    "daisyui": "4.12.23",
 		"prettier": "3.4.2",
 		"prettier-plugin-astro": "0.14.1",
 		"prettier-plugin-tailwindcss": "0.6.9"
