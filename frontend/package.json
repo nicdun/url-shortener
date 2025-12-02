@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "daisyui": "4.12.24",
-		"prettier": "3.7.2",
+		"prettier": "3.7.3",
 		"prettier-plugin-astro": "0.14.1",
 		"prettier-plugin-tailwindcss": "0.7.1"
   }
