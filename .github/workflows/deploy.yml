@@ -15,7 +15,7 @@ jobs:
       PROJECT_ID: ${{ secrets.SB_PROJECT_ID }}
     steps:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
-      - uses: supabase/setup-cli@v1
+      - uses: supabase/setup-cli@afb1b15109756ea5cf9d8985a359d9095235ca2b # v2.1.2
         with:
           version: latest
       - name: Run Database Migrations
